@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>เข้าสู่ระบบ - SchoolFix</title>
+
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+
+body{
+    font-family:Arial, "Noto Sans Thai", sans-serif;
+
+    background:#f4f7fb;
+
+    min-height:100vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+}
+
+
+.login-box{
+    width:100%;
+
+    max-width:420px;
+
+    background:white;
+
+    padding:35px;
+
+    border-radius:20px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+
+.logo{
+    text-align:center;
+
+    font-size:30px;
+
+    font-weight:bold;
+
+    color:#2563eb;
+
+    margin-bottom:8px;
+}
+
+
+.subtitle{
+    text-align:center;
+
+    color:#6b7280;
+
+    margin-bottom:30px;
+}
+
+
+label{
+    display:block;
+
+    font-weight:bold;
+
+    margin-bottom:6px;
+}
+
+
+input{
+    width:100%;
+
+    padding:12px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:8px;
+
+    margin-bottom:18px;
+
+    font-size:15px;
+}
+
+
+input:focus{
+    outline:none;
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 0 2px rgba(37,99,235,0.1);
+}
+
+
+button{
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+
+button:hover{
+    background:#1d4ed8;
+}
+
+
+button:disabled{
+    background:#93c5fd;
+
+    cursor:not-allowed;
+}
+
+
+.error{
+    display:none;
+
+    background:#fee2e2;
+
+    color:#b91c1c;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    margin-bottom:15px;
+
+    font-size:14px;
+
+    text-align:center;
+}
+
+
+.back{
+    display:block;
+
+    text-align:center;
+
+    margin-top:20px;
+
+    color:#2563eb;
+
+    text-decoration:none;
+
+    font-size:14px;
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="login-box">
+
+
+    <div class="logo">
+        🏫 SchoolFix
+    </div>
+
+
+    <p class="subtitle">
+        เข้าสู่ระบบ SchoolFix
+    </p>
+
+
+    <div
+        id="error"
+        class="error"
+    ></div>
+
+
+    <form id="loginForm">
+
+
+        <label>
+            อีเมล
+        </label>
+
+
+        <input
+            id="email"
+            type="email"
+            placeholder="example@email.com"
+            required
+        >
+
+
+        <label>
+            รหัสผ่าน
+        </label>
+
+
+        <input
+            id="password"
+            type="password"
+            placeholder="กรอกรหัสผ่าน"
+            required
+        >
+
+
+        <button
+            id="loginButton"
+            type="submit"
+        >
+            🔐 เข้าสู่ระบบ
+        </button>
+
+
+    </form>
+
+
+    <a
+        href="index.html"
+        class="back"
+    >
+        ← กลับหน้าหลัก
+    </a>
+
+
+</div>
+
+
+
+<script type="module">
+
+
+/* =========================
+   FIREBASE IMPORT
+========================= */
+
+import {
+    initializeApp
+}
+from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+
+
+import {
+    getAuth,
+    signInWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+
+import {
+    getFirestore,
+    doc,
+    getDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+
+
+/* =========================
+   FIREBASE CONFIG
+========================= */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyBQfwnE7KqIsjbA1lAaVcL4h-VOv-N8bEw",
+
+    authDomain:
+        "schoolfix-9aa9e.firebaseapp.com",
+
+    projectId:
+        "schoolfix-9aa9e",
+
+    storageBucket:
+        "schoolfix-9aa9e.appspot.com",
+
+    messagingSenderId:
+        "516546371088",
+
+    appId:
+        "1:516546371088:web:03c7b50b574ca2a6b2f495"
+
+};
+
+
+
+/* =========================
+   INITIALIZE FIREBASE
+========================= */
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const auth =
+    getAuth(app);
+
+
+const db =
+    getFirestore(app);
+
+
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const form =
+    document.getElementById("loginForm");
+
+
+const email =
+    document.getElementById("email");
+
+
+const password =
+    document.getElementById("password");
+
+
+const errorBox =
+    document.getElementById("error");
+
+
+const loginButton =
+    document.getElementById("loginButton");
+
+
+
+/* =========================
+   LOGIN
+========================= */
+
+form.addEventListener(
+    "submit",
+    async function(event){
+
+        event.preventDefault();
+
+
+        /* ซ่อนข้อความเก่า */
+
+        errorBox.style.display =
+            "none";
+
+
+        /* ป้องกันกดปุ่มซ้ำ */
+
+        loginButton.disabled =
+            true;
+
+
+        loginButton.innerText =
+            "กำลังเข้าสู่ระบบ...";
+
+
+        try{
+
+
+            /* =========================
+               LOGIN FIREBASE AUTH
+            ========================= */
+
+            const userCredential =
+                await signInWithEmailAndPassword(
+                    auth,
+                    email.value.trim(),
+                    password.value
+                );
+
+
+            const user =
+                userCredential.user;
+
+
+
+            /* =========================
+               อ่านข้อมูล USER
+            ========================= */
+
+            const userRef =
+                doc(
+                    db,
+                    "users",
+                    user.uid
+                );
+
+
+            const userDoc =
+                await getDoc(userRef);
+
+
+
+            /* =========================
+               ไม่พบข้อมูล USER
+            ========================= */
+
+            if(!userDoc.exists()){
+
+                errorBox.style.display =
+                    "block";
+
+                errorBox.innerText =
+                    "ไม่สามารถเข้าสู่ระบบได้ กรุณาติดต่อผู้ดูแลระบบ";
+
+                loginButton.disabled =
+                    false;
+
+                loginButton.innerText =
+                    "🔐 เข้าสู่ระบบ";
+
+                return;
+
+            }
+
+
+
+            /* =========================
+               อ่าน ROLE
+            ========================= */
+
+            const userData =
+                userDoc.data();
+
+
+            const role =
+                userData.role;
+
+
+
+            /* =========================
+               ADMIN
+            ========================= */
+
+            if(role === "admin"){
+
+                loginButton.innerText =
+                    "เข้าสู่ระบบสำเร็จ";
+
+
+                /*
+                    กลับจากโฟลเดอร์นักเรียน
+                    ไปยังโฟลเดอร์แอดมิน
+                */
+
+                window.location.href =
+                    "../แอดมิน/admin.html";
+
+
+                return;
+
+            }
+
+
+
+            /* =========================
+               STUDENT
+            ========================= */
+
+            if(role === "student"){
+
+                loginButton.innerText =
+                    "เข้าสู่ระบบสำเร็จ";
+
+
+                window.location.href =
+                    "index.html";
+
+
+                return;
+
+            }
+
+
+
+            /* =========================
+               ROLE ไม่ถูกต้อง
+            ========================= */
+
+            errorBox.style.display =
+                "block";
+
+
+            errorBox.innerText =
+                "ไม่สามารถเข้าสู่ระบบได้ กรุณาติดต่อผู้ดูแลระบบ";
+
+
+            loginButton.disabled =
+                false;
+
+
+            loginButton.innerText =
+                "🔐 เข้าสู่ระบบ";
+
+        }
+
+
+        catch(error){
+
+            /*
+                ไม่แสดงรายละเอียด Error
+                ให้ผู้ใช้เห็น
+            */
+
+            console.error(
+                "Login Error:",
+                error
+            );
+
+
+            errorBox.style.display =
+                "block";
+
+
+            errorBox.innerText =
+                "เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่";
+
+
+            loginButton.disabled =
+                false;
+
+
+            loginButton.innerText =
+                "🔐 เข้าสู่ระบบ";
+
+        }
+
+    }
+);
+
+
+</script>
+
+
+</body>
+
+</html>
