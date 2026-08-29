@@ -4,9 +4,11 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>SchoolFix - ระบบแจ้งปัญหาโรงเรียน</title>
+
 
 <style>
 
@@ -16,11 +18,13 @@
     padding:0;
 }
 
+
 body{
     font-family:Arial,"Noto Sans Thai",sans-serif;
     background:#f4f7fb;
     color:#1f2937;
 }
+
 
 /* =========================
    HEADER
@@ -43,11 +47,13 @@ header{
     z-index:100;
 }
 
+
 .logo{
     font-size:25px;
     font-weight:bold;
     color:#2563eb;
 }
+
 
 .admin-btn{
     text-decoration:none;
@@ -64,10 +70,12 @@ header{
     transition:0.2s;
 }
 
+
 .admin-btn:hover{
     background:#1d4ed8;
     transform:translateY(-2px);
 }
+
 
 /* =========================
    HERO
@@ -80,6 +88,7 @@ header{
 
     width:100%;
 }
+
 
 .hero img{
     width:100%;
@@ -97,6 +106,7 @@ header{
 
     box-shadow:0 5px 20px rgba(0,0,0,0.15);
 }
+
 
 /* =========================
    MENU
@@ -118,6 +128,7 @@ header{
 
     align-items:stretch;
 }
+
 
 .card{
     background:white;
@@ -142,6 +153,7 @@ header{
         background 0.2s;
 }
 
+
 .card:hover{
     transform:translateY(-7px);
 
@@ -151,17 +163,20 @@ header{
     background:#f8fbff;
 }
 
+
 .icon{
     font-size:45px;
 
     margin-bottom:15px;
 }
 
+
 .card h3{
     font-size:18px;
 
     color:#1f2937;
 }
+
 
 /* =========================
    NEWS
@@ -184,15 +199,18 @@ header{
         0 4px 15px rgba(0,0,0,0.07);
 }
 
+
 .news h2{
     color:#2563eb;
 
     margin-bottom:20px;
 }
 
+
 .news ul{
     list-style:none;
 }
+
 
 .news li{
     padding:15px;
@@ -208,6 +226,7 @@ header{
     line-height:1.6;
 }
 
+
 .news-date{
     display:block;
 
@@ -217,6 +236,7 @@ header{
 
     margin-top:5px;
 }
+
 
 /* =========================
    FLOATING BUTTON
@@ -254,11 +274,13 @@ header{
     z-index:200;
 }
 
+
 .contact-btn:hover{
     transform:scale(1.1);
 
     background:#1d4ed8;
 }
+
 
 /* =========================
    FOOTER
@@ -275,6 +297,7 @@ footer{
 
     font-size:14px;
 }
+
 
 /* =========================
    AUTH LOADING
@@ -306,6 +329,7 @@ footer{
     font-weight:bold;
 }
 
+
 .spinner{
     width:42px;
     height:42px;
@@ -319,6 +343,7 @@ footer{
     animation:spin 0.8s linear infinite;
 }
 
+
 @keyframes spin{
 
     to{
@@ -326,6 +351,7 @@ footer{
     }
 
 }
+
 
 /* =========================
    TABLET
@@ -337,9 +363,11 @@ footer{
         padding:15px 4%;
     }
 
+
     .logo{
         font-size:21px;
     }
+
 
     .admin-btn{
         font-size:14px;
@@ -347,9 +375,11 @@ footer{
         padding:8px 12px;
     }
 
+
     .hero{
         padding-top:20px;
     }
+
 
     .hero img{
         height:300px;
@@ -357,15 +387,18 @@ footer{
         border-radius:0;
     }
 
+
     .menu{
         flex-wrap:wrap;
     }
+
 
     .card{
         width:calc(50% - 10px);
     }
 
 }
+
 
 /* =========================
    MOBILE
@@ -377,9 +410,11 @@ footer{
         padding:13px 4%;
     }
 
+
     .logo{
         font-size:19px;
     }
+
 
     .admin-btn{
         font-size:13px;
@@ -387,9 +422,11 @@ footer{
         padding:8px 10px;
     }
 
+
     .hero{
         padding-top:10px;
     }
+
 
     .hero img{
         width:100%;
@@ -399,15 +436,18 @@ footer{
         border-radius:0;
     }
 
+
     .card{
         width:100%;
     }
+
 
     .news{
         width:92%;
 
         padding:20px;
     }
+
 
     .contact-btn{
         right:18px;
@@ -457,7 +497,7 @@ footer{
     <!-- Admin -->
 
     <a
-        href="Admin/admin.html"
+        href="../Admin/admin.html"
         class="admin-btn"
     >
         👨‍💼 เจ้าหน้าที่
@@ -473,8 +513,9 @@ footer{
 <section class="hero">
 
     <img
-        src="school.jpg"
+        src="../images/school.jpg"
         alt="รูปโรงเรียน"
+        onerror="this.style.display='none'"
     >
 
 </section>
@@ -491,7 +532,7 @@ footer{
 
     <div
         class="card"
-        onclick="location.href='นักเรียน/report.html'"
+        onclick="location.href='report.html'"
     >
 
         <div class="icon">
@@ -509,7 +550,7 @@ footer{
 
     <div
         class="card"
-        onclick="location.href='นักเรียน/track.html'"
+        onclick="location.href='track.html'"
     >
 
         <div class="icon">
@@ -527,7 +568,7 @@ footer{
 
     <div
         class="card"
-        onclick="location.href='นักเรียน/stats.html'"
+        onclick="location.href='stats.html'"
     >
 
         <div class="icon">
@@ -545,7 +586,7 @@ footer{
 
     <div
         class="card"
-        onclick="location.href='นักเรียน/news.html'"
+        onclick="location.href='news.html'"
     >
 
         <div class="icon">
@@ -589,7 +630,7 @@ footer{
 ========================= -->
 
 <a
-    href="Admin/admin.html"
+    href="../Admin/admin.html"
     class="contact-btn"
     title="ติดต่อเจ้าหน้าที่"
 >
@@ -728,7 +769,7 @@ onAuthStateChanged(
         if(!user){
 
             window.location.href =
-                "นักเรียน/login.html";
+                "login.html";
 
             return;
 
@@ -760,12 +801,16 @@ onAuthStateChanged(
             if(!userDoc.exists()){
 
                 window.location.href =
-                    "นักเรียน/login.html";
+                    "login.html";
 
                 return;
 
             }
 
+
+            /*
+                อ่านข้อมูล User
+            */
 
             const userData =
                 userDoc.data();
@@ -773,13 +818,12 @@ onAuthStateChanged(
 
             /*
                 ถ้าเป็น Admin
-                ส่งไปหน้า Admin
             */
 
             if(userData.role === "admin"){
 
                 window.location.href =
-                    "Admin/admin.html";
+                    "../Admin/admin.html";
 
                 return;
 
@@ -787,13 +831,13 @@ onAuthStateChanged(
 
 
             /*
-                ถ้าไม่ใช่ student
+                ถ้าไม่ใช่ Student
             */
 
             if(userData.role !== "student"){
 
                 window.location.href =
-                    "นักเรียน/login.html";
+                    "login.html";
 
                 return;
 
@@ -817,6 +861,7 @@ onAuthStateChanged(
 
         }
 
+
         catch(error){
 
             console.error(
@@ -826,7 +871,7 @@ onAuthStateChanged(
 
 
             window.location.href =
-                "นักเรียน/login.html";
+                "login.html";
 
         }
 
@@ -961,6 +1006,7 @@ function loadNews(){
 
         },
 
+
         (error)=>{
 
             console.error(
@@ -1020,6 +1066,7 @@ function escapeHTML(value){
         );
 
 }
+
 
 </script>
 
