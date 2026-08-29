@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ติดตามปัญหา - SchoolFix</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+h2{
+    text-align:center;
+}
+
+/* Search */
+
+#search{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+/* Dashboard */
+
+.dashboard{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+}
+
+.box{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    width:160px;
+    text-align:center;
+}
+
+.box h3{
+    margin:0;
+    font-size:20px;
+}
+
+/* Card */
+
+.card{
+    background:white;
+    padding:15px;
+    margin-bottom:10px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Status */
+
+.status{
+    padding:4px 8px;
+    border-radius:6px;
+    font-size:12px;
+}
+
+.pending{
+    background:#ffe08a;
+}
+
+.doing{
+    background:#8fd3ff;
+}
+
+.done{
+    background:#9cffb1;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>📊 ติดตามปัญหา SchoolFix</h2>
+
+<!-- 🔍 SEARCH -->
+
+<input
+    id="search"
+    placeholder="🔍 ค้นหารหัสคำร้อง ชื่อผู้แจ้ง ประเภท สถานที่ หรือรายละเอียด..."
+>
+
+<!-- 📊 DASHBOARD -->
+
+<div class="dashboard">
+
+    <div class="box">
+        ทั้งหมด
+        <br>
+        <h3 id="total">0</h3>
+    </div>
+
+    <div class="box">
+        รอดำเนินการ
+        <br>
+        <h3 id="pending">0</h3>
+    </div>
+
+    <div class="box">
+        กำลังทำ
+        <br>
+        <h3 id="doing">0</h3>
+    </div>
+
+    <div class="box">
+        เสร็จแล้ว
+        <br>
+        <h3 id="done">0</h3>
+    </div>
+
+</div>
+
+<div id="list"></div>
+
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+
+/* =========================
+   FIREBASE
+========================= */
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyBQfwnE7KqIsjbA1lAaVcL4h-VOv-N8bEw",
+
+    authDomain: "schoolfix-9aa9e.firebaseapp.com",
+
+    projectId: "schoolfix-9aa9e",
+
+    storageBucket: "schoolfix-9aa9e.appspot.com",
+
+    messagingSenderId: "516546371088",
+
+    appId: "1:516546371088:web:03c7b50b574ca2a6b2f495"
+
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+const db =
+    getFirestore(app);
+
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const list =
+    document.getElementById("list");
+
+const search =
+    document.getElementById("search");
+
+
+/* =========================
+   เก็บข้อมูลจาก Firestore
+========================= */
+
+let problems = [];
+
+
+/* =========================
+   แปลงข้อมูลเป็นข้อความ
+========================= */
+
+function text(value){
+
+    if(
+        value === null ||
+        value === undefined
+    ){
+
+        return "";
+
+    }
+
+    return String(value)
+        .toLowerCase();
+
+}
+
+
+/* =========================
+   แสดงข้อมูล
+========================= */
+
+function renderProblems(){
+
+    list.innerHTML = "";
+
+
+    const keyword =
+        search.value
+        .toLowerCase()
+        .trim();
+
+
+    let found = 0;
+
+
+    problems.forEach((item)=>{
+
+        const d =
+            item.data;
+
+
+        /* =========================
+           ข้อมูลสำหรับค้นหา
+        ========================= */
+
+
+        // ID ของเอกสาร Firestore
+
+        const documentId =
+            text(item.id);
+
+
+        // รหัสคำร้อง
+
+        const requestId =
+            text(
+                d.requestId ||
+                d.problemId ||
+                d.code ||
+                d.ticketId
+            );
+
+
+        // หัวข้อปัญหา
+
+        const title =
+            text(d.title);
+
+
+        // รายละเอียด
+
+        const detail =
+            text(d.detail);
+
+
+        // ชื่อผู้แจ้ง
+
+        const reporter =
+            text(
+                d.reporter ||
+                d.name ||
+                d.reporterName ||
+                d.studentName
+            );
+
+
+        // ประเภทปัญหา
+
+        const category =
+            text(
+                d.category ||
+                d.type ||
+                d.problemType
+            );
+
+
+        // สถานที่
+
+        const location =
+            text(
+                d.location ||
+                d.place ||
+                d.address
+            );
+
+
+        /* =========================
+           ตรวจสอบคำค้น
+        ========================= */
+
+        const matched =
+
+            keyword === ""
+
+            ||
+
+            documentId.includes(keyword)
+
+            ||
+
+            requestId.includes(keyword)
+
+            ||
+
+            title.includes(keyword)
+
+            ||
+
+            detail.includes(keyword)
+
+            ||
+
+            reporter.includes(keyword)
+
+            ||
+
+            category.includes(keyword)
+
+            ||
+
+            location.includes(keyword);
+
+
+        if(!matched){
+
+            return;
+
+        }
+
+
+        found++;
+
+
+        /* =========================
+           STATUS
+        ========================= */
+
+        let statusText = "";
+
+        if(d.status === "pending"){
+
+            statusText =
+                "🔴 รอดำเนินการ";
+
+        }
+
+        else if(d.status === "doing"){
+
+            statusText =
+                "🟡 กำลังดำเนินการ";
+
+        }
+
+        else if(d.status === "done"){
+
+            statusText =
+                "🟢 เสร็จแล้ว";
+
+        }
+
+        else{
+
+            statusText =
+                "ไม่ระบุสถานะ";
+
+        }
+
+
+        /* =========================
+           CARD
+        ========================= */
+
+        list.innerHTML += `
+
+            <div class="card">
+
+                ${
+                    d.requestId ||
+                    d.problemId ||
+                    d.code ||
+                    d.ticketId
+                    ?
+
+                    `
+                    <p>
+                        🎫 รหัสคำร้อง:
+                        ${
+                            d.requestId ||
+                            d.problemId ||
+                            d.code ||
+                            d.ticketId
+                        }
+                    </p>
+                    `
+
+                    :
+
+                    ""
+                }
+
+
+                <h3>
+                    ${d.title || "ไม่ระบุหัวข้อ"}
+                </h3>
+
+
+                ${
+                    d.reporter ||
+                    d.name ||
+                    d.reporterName ||
+                    d.studentName
+                    ?
+
+                    `
+                    <p>
+                        👤 ผู้แจ้ง:
+                        ${
+                            d.reporter ||
+                            d.name ||
+                            d.reporterName ||
+                            d.studentName
+                        }
+                    </p>
+                    `
+
+                    :
+
+                    ""
+                }
+
+
+                ${
+                    d.category ||
+                    d.type ||
+                    d.problemType
+                    ?
+
+                    `
+                    <p>
+                        🛠️ ประเภท:
+                        ${
+                            d.category ||
+                            d.type ||
+                            d.problemType
+                        }
+                    </p>
+                    `
+
+                    :
+
+                    ""
+                }
+
+
+                ${
+                    d.location ||
+                    d.place ||
+                    d.address
+                    ?
+
+                    `
+                    <p>
+                        📍 สถานที่:
+                        ${
+                            d.location ||
+                            d.place ||
+                            d.address
+                        }
+                    </p>
+                    `
+
+                    :
+
+                    ""
+                }
+
+
+                <p>
+                    📝 ${d.detail || ""}
+                </p>
+
+
+                <span class="status ${d.status || ""}">
+
+                    ${statusText}
+
+                </span>
+
+            </div>
+
+        `;
+
+    });
+
+
+    /* =========================
+       ไม่พบข้อมูล
+    ========================= */
+
+    if(found === 0){
+
+        list.innerHTML = `
+
+            <div class="card" style="text-align:center;">
+
+                🔍 ไม่พบปัญหาที่ค้นหา
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================
+   FIRESTORE REAL-TIME
+========================= */
+
+onSnapshot(
+
+    collection(db,"problems"),
+
+    (snapshot)=>{
+
+        /*
+            เก็บข้อมูลทั้งหมดไว้ในตัวแปร
+            เพื่อให้ค้นหาได้ทันที
+        */
+
+        problems = [];
+
+
+        let total = 0;
+        let pending = 0;
+        let doing = 0;
+        let done = 0;
+
+
+        snapshot.forEach((docSnap)=>{
+
+            const d =
+                docSnap.data();
+
+
+            problems.push({
+
+                id:docSnap.id,
+
+                data:d
+
+            });
+
+
+            total++;
+
+
+            if(d.status === "pending"){
+
+                pending++;
+
+            }
+
+
+            if(d.status === "doing"){
+
+                doing++;
+
+            }
+
+
+            if(d.status === "done"){
+
+                done++;
+
+            }
+
+        });
+
+
+        /* =========================
+           DASHBOARD
+        ========================= */
+
+        document.getElementById("total")
+            .innerText = total;
+
+
+        document.getElementById("pending")
+            .innerText = pending;
+
+
+        document.getElementById("doing")
+            .innerText = doing;
+
+
+        document.getElementById("done")
+            .innerText = done;
+
+
+        /* =========================
+           แสดงข้อมูล
+        ========================= */
+
+        renderProblems();
+
+    }
+
+);
+
+
+/* =========================
+   SEARCH REAL-TIME
+========================= */
+
+search.addEventListener(
+    "input",
+    function(){
+
+        renderProblems();
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>
