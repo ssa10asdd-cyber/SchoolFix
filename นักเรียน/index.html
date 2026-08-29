@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SchoolFix - ระบบแจ้งปัญหาโรงเรียน</title>
+
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+
+body{
+    font-family:Arial,"Noto Sans Thai",sans-serif;
+    background:#f4f7fb;
+    color:#1f2937;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+    width:100%;
+    background:white;
+
+    padding:18px 6%;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+
+.logo{
+    font-size:25px;
+    font-weight:bold;
+    color:#2563eb;
+}
+
+
+.admin-btn{
+    text-decoration:none;
+
+    background:#2563eb;
+    color:white;
+
+    padding:10px 18px;
+
+    border-radius:10px;
+
+    font-weight:bold;
+
+    transition:0.2s;
+}
+
+
+.admin-btn:hover{
+    background:#1d4ed8;
+    transform:translateY(-2px);
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+    text-align:center;
+
+    padding:30px 0 35px;
+
+    width:100%;
+}
+
+
+.hero img{
+    width:100%;
+    max-width:1400px;
+
+    height:430px;
+
+    object-fit:cover;
+
+    display:block;
+
+    margin:0 auto 30px;
+
+    border-radius:0 0 18px 18px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,0.15);
+}
+
+
+/* =========================
+   MENU
+========================= */
+
+.menu{
+    width:90%;
+    max-width:1100px;
+
+    margin:20px auto 45px;
+
+    display:flex;
+
+    flex-direction:row;
+
+    gap:20px;
+
+    justify-content:center;
+
+    align-items:stretch;
+}
+
+
+.card{
+    background:white;
+
+    width:25%;
+
+    min-height:150px;
+
+    border-radius:18px;
+
+    padding:25px 15px;
+
+    text-align:center;
+
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
+
+    cursor:pointer;
+
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s,
+        background 0.2s;
+}
+
+
+.card:hover{
+    transform:translateY(-7px);
+
+    box-shadow:
+        0 10px 25px rgba(37,99,235,0.18);
+
+    background:#f8fbff;
+}
+
+
+.icon{
+    font-size:45px;
+
+    margin-bottom:15px;
+}
+
+
+.card h3{
+    font-size:18px;
+
+    color:#1f2937;
+}
+
+
+/* =========================
+   NEWS
+========================= */
+
+.news{
+    width:90%;
+
+    max-width:1100px;
+
+    margin:0 auto 80px;
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:18px;
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,0.07);
+}
+
+
+.news h2{
+    color:#2563eb;
+
+    margin-bottom:20px;
+}
+
+
+.news ul{
+    list-style:none;
+}
+
+
+.news li{
+    padding:15px;
+
+    margin-bottom:10px;
+
+    background:#f4f7fb;
+
+    border-radius:10px;
+
+    border-left:5px solid #2563eb;
+
+    line-height:1.6;
+}
+
+
+.news-date{
+    display:block;
+
+    color:#888;
+
+    font-size:12px;
+
+    margin-top:5px;
+}
+
+
+/* =========================
+   FLOATING BUTTON
+========================= */
+
+.contact-btn{
+    position:fixed;
+
+    right:25px;
+    bottom:25px;
+
+    width:60px;
+    height:60px;
+
+    border-radius:50%;
+
+    background:#2563eb;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    font-size:27px;
+
+    text-decoration:none;
+
+    box-shadow:
+        0 5px 15px rgba(0,0,0,0.2);
+
+    transition:0.2s;
+
+    z-index:200;
+}
+
+
+.contact-btn:hover{
+    transform:scale(1.1);
+
+    background:#1d4ed8;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+    background:#1e3a8a;
+
+    color:white;
+
+    text-align:center;
+
+    padding:20px;
+
+    font-size:14px;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media(max-width:800px){
+
+    header{
+        padding:15px 4%;
+    }
+
+
+    .logo{
+        font-size:21px;
+    }
+
+
+    .admin-btn{
+        font-size:14px;
+
+        padding:8px 12px;
+    }
+
+
+    .hero{
+        padding-top:20px;
+    }
+
+
+    .hero img{
+        height:300px;
+
+        border-radius:0;
+    }
+
+
+    .menu{
+        flex-wrap:wrap;
+    }
+
+
+    .card{
+        width:calc(50% - 10px);
+    }
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:500px){
+
+    header{
+        padding:13px 4%;
+    }
+
+
+    .logo{
+        font-size:19px;
+    }
+
+
+    .admin-btn{
+        font-size:13px;
+
+        padding:8px 10px;
+    }
+
+
+    .hero{
+        padding-top:10px;
+    }
+
+
+    .hero img{
+        width:100%;
+
+        height:220px;
+
+        border-radius:0;
+    }
+
+
+    .card{
+        width:100%;
+    }
+
+
+    .news{
+        width:92%;
+
+        padding:20px;
+    }
+
+
+    .contact-btn{
+        right:18px;
+
+        bottom:18px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+    <div class="logo">
+        🏫 SchoolFix
+    </div>
+
+
+    <a
+        href="../Admin/admin.html"
+        class="admin-btn"
+    >
+        👨‍💼 เจ้าหน้าที่
+    </a>
+
+</header>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section class="hero">
+
+    <img
+        src="../images/school.jpg"
+        alt="รูปโรงเรียน"
+        onerror="this.style.display='none'"
+    >
+
+</section>
+
+
+<!-- =========================
+     MENU
+========================= -->
+
+<section class="menu">
+
+
+    <!-- แจ้งปัญหา -->
+
+    <div
+        class="card"
+        onclick="location.href='report.html'"
+    >
+
+        <div class="icon">
+            📢
+        </div>
+
+        <h3>
+            แจ้งปัญหา
+        </h3>
+
+    </div>
+
+
+    <!-- ติดตามปัญหา -->
+
+    <div
+        class="card"
+        onclick="location.href='track.html'"
+    >
+
+        <div class="icon">
+            📋
+        </div>
+
+        <h3>
+            ติดตามปัญหา
+        </h3>
+
+    </div>
+
+
+    <!-- สถิติ -->
+
+    <div
+        class="card"
+        onclick="location.href='stats.html'"
+    >
+
+        <div class="icon">
+            📊
+        </div>
+
+        <h3>
+            สถิติ
+        </h3>
+
+    </div>
+
+
+    <!-- ข่าวสาร -->
+
+    <div
+        class="card"
+        onclick="location.href='news.html'"
+    >
+
+        <div class="icon">
+            🏆
+        </div>
+
+        <h3>
+            ข่าวสาร
+        </h3>
+
+    </div>
+
+
+</section>
+
+
+<!-- =========================
+     NEWS
+========================= -->
+
+<section class="news">
+
+    <h2>
+        📌 ข่าวประชาสัมพันธ์
+    </h2>
+
+
+    <ul id="newsList">
+
+        <li>
+            กำลังโหลดข่าวประชาสัมพันธ์...
+        </li>
+
+    </ul>
+
+</section>
+
+
+<!-- =========================
+     CONTACT
+========================= -->
+
+<a
+    href="../Admin/admin.html"
+    class="contact-btn"
+    title="ติดต่อเจ้าหน้าที่"
+>
+    👨‍💼
+</a>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    © 2026 SchoolFix
+
+    <br>
+
+    ระบบแจ้งและติดตามปัญหาภายในโรงเรียน
+
+</footer>
+
+
+<!-- =========================
+     FIREBASE - NEWS ONLY
+========================= -->
+
+<script type="module">
+
+
+/* =========================
+   FIREBASE APP
+========================= */
+
+import {
+    initializeApp
+}
+from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+
+
+/* =========================
+   FIRESTORE
+========================= */
+
+import {
+    getFirestore,
+    collection,
+    onSnapshot,
+    query,
+    orderBy
+}
+from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+
+/* =========================
+   FIREBASE CONFIG
+========================= */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyBQfwnE7KqIsjbA1lAaVcL4h-VOv-N8bEw",
+
+    authDomain:
+        "schoolfix-9aa9e.firebaseapp.com",
+
+    projectId:
+        "schoolfix-9aa9e",
+
+    storageBucket:
+        "schoolfix-9aa9e.appspot.com",
+
+    messagingSenderId:
+        "516546371088",
+
+    appId:
+        "1:516546371088:web:03c7b50b574ca2a6b2f495"
+
+};
+
+
+/* =========================
+   INITIALIZE
+========================= */
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const db =
+    getFirestore(app);
+
+
+/* =========================
+   ELEMENT
+========================= */
+
+const newsList =
+    document.getElementById("newsList");
+
+
+/* =========================
+   LOAD NEWS
+========================= */
+
+function loadNews(){
+
+    const newsQuery =
+        query(
+
+            collection(
+                db,
+                "news"
+            ),
+
+            orderBy(
+                "createdAt",
+                "desc"
+            )
+
+        );
+
+
+    onSnapshot(
+
+        newsQuery,
+
+        function(snapshot){
+
+            newsList.innerHTML = "";
+
+
+            /* ไม่มีข่าว */
+
+            if(snapshot.empty){
+
+                newsList.innerHTML = `
+
+                    <li>
+                        📭 ยังไม่มีข่าวประชาสัมพันธ์
+                    </li>
+
+                `;
+
+                return;
+
+            }
+
+
+            /* แสดงข่าว */
+
+            snapshot.forEach(
+
+                function(docSnap){
+
+                    const data =
+                        docSnap.data();
+
+
+                    let dateText =
+                        "";
+
+
+                    if(data.createdAt){
+
+                        try{
+
+                            dateText =
+                                data.createdAt
+                                .toDate()
+                                .toLocaleDateString(
+
+                                    "th-TH",
+
+                                    {
+                                        year:"numeric",
+                                        month:"long",
+                                        day:"numeric"
+                                    }
+
+                                );
+
+                        }
+
+                        catch(error){
+
+                            console.log(
+                                "Date error:",
+                                error
+                            );
+
+                        }
+
+                    }
+
+
+                    const li =
+                        document.createElement(
+                            "li"
+                        );
+
+
+                    const title =
+                        document.createTextNode(
+
+                            "📢 " +
+                            (
+                                data.title ||
+                                "ข่าวประชาสัมพันธ์"
+                            )
+
+                        );
+
+
+                    li.appendChild(
+                        title
+                    );
+
+
+                    const date =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    date.className =
+                        "news-date";
+
+
+                    date.textContent =
+                        "📅 " +
+                        (
+                            dateText ||
+                            "ไม่ระบุวันที่"
+                        );
+
+
+                    li.appendChild(
+                        date
+                    );
+
+
+                    newsList.appendChild(
+                        li
+                    );
+
+                }
+
+            );
+
+        },
+
+
+        function(error){
+
+            console.error(
+                "Firestore news error:",
+                error
+            );
+
+
+            newsList.innerHTML = `
+
+                <li>
+
+                    ❌ ไม่สามารถโหลดข่าวประชาสัมพันธ์ได้
+
+                </li>
+
+            `;
+
+        }
+
+    );
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadNews();
+
+
+</script>
+
+
+</body>
+
+</html>
