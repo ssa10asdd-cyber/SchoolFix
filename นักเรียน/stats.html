@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>สถิติ - SchoolFix</title>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    padding:20px;
+    font-family:Arial, "Noto Sans Thai", sans-serif;
+    background:#f4f6f9;
+    color:#333;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+    background:#2563eb;
+    color:white;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:25px;
+}
+
+.header h1{
+    margin:0;
+}
+
+.header p{
+    margin:8px 0 0;
+}
+
+
+/* =========================
+   TITLE
+========================= */
+
+.page-title{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.page-title h2{
+    margin:0;
+    color:#2563eb;
+}
+
+.page-title p{
+    margin-top:8px;
+    color:#666;
+}
+
+
+/* =========================
+   SUMMARY
+========================= */
+
+.summary{
+    display:flex;
+    gap:15px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-bottom:25px;
+}
+
+.box{
+    background:white;
+    width:180px;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.box .number{
+    font-size:32px;
+    font-weight:bold;
+    color:#2563eb;
+    margin-bottom:8px;
+}
+
+.box .label{
+    color:#555;
+    font-weight:bold;
+}
+
+
+/* =========================
+   CHART AREA
+========================= */
+
+.chart-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    max-width:1100px;
+    margin:0 auto;
+}
+
+.chart-card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.chart-card h3{
+    margin-top:0;
+    text-align:center;
+    color:#333;
+}
+
+.chart-wrapper{
+    position:relative;
+    height:330px;
+}
+
+
+/* =========================
+   INFO
+========================= */
+
+.info-card{
+    background:white;
+    max-width:1100px;
+    margin:25px auto 0;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+
+    text-align:center;
+}
+
+.info-card strong{
+    color:#2563eb;
+}
+
+
+/* =========================
+   LOADING
+========================= */
+
+.loading{
+    text-align:center;
+    padding:30px;
+    color:#777;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:800px){
+
+    .chart-grid{
+        grid-template-columns:1fr;
+    }
+
+    .box{
+        width:calc(50% - 10px);
+    }
+
+}
+
+
+@media(max-width:500px){
+
+    body{
+        padding:12px;
+    }
+
+    .header{
+        padding:18px;
+    }
+
+    .box{
+        width:100%;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<div class="header">
+
+    <h1>🏫 SchoolFix</h1>
+
+    <p>
+        ระบบสถิติและข้อมูลการแจ้งปัญหาภายในโรงเรียน
+    </p>
+
+</div>
+
+
+<!-- =========================
+     TITLE
+========================= -->
+
+<div class="page-title">
+
+    <h2>📊 สถิติการแจ้งปัญหา</h2>
+
+    <p>
+        ข้อมูลอัปเดตแบบ Real-time จากระบบ SchoolFix
+    </p>
+
+</div>
+
+
+<!-- =========================
+     SUMMARY
+========================= -->
+
+<div class="summary">
+
+    <div class="box">
+
+        <div
+            id="total"
+            class="number"
+        >
+            0
+        </div>
+
+        <div class="label">
+            📋 คำร้องทั้งหมด
+        </div>
+
+    </div>
+
+
+    <div class="box">
+
+        <div
+            id="pending"
+            class="number"
+        >
+            0
+        </div>
+
+        <div class="label">
+            🔴 รอดำเนินการ
+        </div>
+
+    </div>
+
+
+    <div class="box">
+
+        <div
+            id="doing"
+            class="number"
+        >
+            0
+        </div>
+
+        <div class="label">
+            🟡 กำลังดำเนินการ
+        </div>
+
+    </div>
+
+
+    <div class="box">
+
+        <div
+            id="done"
+            class="number"
+        >
+            0
+        </div>
+
+        <div class="label">
+            🟢 เสร็จสิ้น
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     CHARTS
+========================= -->
+
+<div class="chart-grid">
+
+
+    <!-- STATUS CHART -->
+
+    <div class="chart-card">
+
+        <h3>
+            📌 สถานะการดำเนินงาน
+        </h3>
+
+        <div class="chart-wrapper">
+
+            <canvas
+                id="statusChart"
+            ></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- TYPE CHART -->
+
+    <div class="chart-card">
+
+        <h3>
+            📂 ประเภทปัญหา
+        </h3>
+
+        <div class="chart-wrapper">
+
+            <canvas
+                id="typeChart"
+            ></canvas>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     INFO
+========================= -->
+
+<div class="info-card">
+
+    จำนวนคำร้องทั้งหมดในระบบ:
+
+    <strong id="infoTotal">
+        0
+    </strong>
+
+    รายการ
+
+</div>
+
+
+<div
+    id="loading"
+    class="loading"
+>
+    กำลังเชื่อมต่อฐานข้อมูล...
+</div>
+
+
+
+<!-- =========================
+     FIREBASE
+========================= -->
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+
+
+import {
+    getFirestore,
+    collection,
+    onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+
+/* =========================
+   FIREBASE CONFIG
+========================= */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyBQfwnE7KqIsjbA1lAaVcL4h-VOv-N8bEw",
+
+    authDomain:
+        "schoolfix-9aa9e.firebaseapp.com",
+
+    projectId:
+        "schoolfix-9aa9e",
+
+    storageBucket:
+        "schoolfix-9aa9e.appspot.com",
+
+    messagingSenderId:
+        "516546371088",
+
+    appId:
+        "1:516546371088:web:03c7b50b574ca2a6b2f495"
+
+};
+
+
+/* =========================
+   CONNECT FIREBASE
+========================= */
+
+const app =
+    initializeApp(firebaseConfig);
+
+const db =
+    getFirestore(app);
+
+
+/* =========================
+   CHART VARIABLES
+========================= */
+
+let statusChart = null;
+
+let typeChart = null;
+
+
+/* =========================
+   FIRESTORE REAL-TIME
+========================= */
+
+onSnapshot(
+
+    collection(db,"problems"),
+
+    (snapshot)=>{
+
+        let total = 0;
+
+        let pending = 0;
+
+        let doing = 0;
+
+        let done = 0;
+
+
+        /* ประเภทปัญหา */
+
+        let typeCounts = {};
+
+
+        snapshot.forEach((docSnap)=>{
+
+            const data =
+                docSnap.data();
+
+
+            total++;
+
+
+            /* =====================
+               STATUS
+            ===================== */
+
+            if(data.status === "pending"){
+
+                pending++;
+
+            }
+
+            else if(data.status === "doing"){
+
+                doing++;
+
+            }
+
+            else if(data.status === "done"){
+
+                done++;
+
+            }
+
+
+            /* =====================
+               PROBLEM TYPE
+            ===================== */
+
+            let type =
+                data.problemType
+                ||
+                data.type
+                ||
+                data.title
+                ||
+                "อื่นๆ";
+
+
+            /*
+             * ถ้า title เป็นแบบ
+             * "ประปา - อาคาร 3"
+             * ให้เอาเฉพาะคำแรก
+             */
+
+            if(type.includes(" - ")){
+
+                type =
+                    type.split(" - ")[0];
+
+            }
+
+
+            type =
+                type.trim();
+
+
+            if(type === ""){
+
+                type = "อื่นๆ";
+
+            }
+
+
+            if(!typeCounts[type]){
+
+                typeCounts[type] = 0;
+
+            }
+
+
+            typeCounts[type]++;
+
+        });
+
+
+        /* =====================
+           UPDATE NUMBERS
+        ===================== */
+
+        document.getElementById(
+            "total"
+        ).innerText = total;
+
+
+        document.getElementById(
+            "pending"
+        ).innerText = pending;
+
+
+        document.getElementById(
+            "doing"
+        ).innerText = doing;
+
+
+        document.getElementById(
+            "done"
+        ).innerText = done;
+
+
+        document.getElementById(
+            "infoTotal"
+        ).innerText = total;
+
+
+        document.getElementById(
+            "loading"
+        ).style.display = "none";
+
+
+        /* =====================
+           STATUS CHART
+        ===================== */
+
+        const statusCanvas =
+            document.getElementById(
+                "statusChart"
+            );
+
+
+        if(statusChart){
+
+            statusChart.destroy();
+
+        }
+
+
+        statusChart =
+            new Chart(
+                statusCanvas,
+                {
+
+                    type:"doughnut",
+
+                    data:{
+
+                        labels:[
+                            "รอดำเนินการ",
+                            "กำลังดำเนินการ",
+                            "เสร็จสิ้น"
+                        ],
+
+                        datasets:[{
+
+                            data:[
+                                pending,
+                                doing,
+                                done
+                            ]
+
+                        }]
+
+                    },
+
+                    options:{
+
+                        responsive:true,
+
+                        maintainAspectRatio:false,
+
+                        plugins:{
+
+                            legend:{
+
+                                position:"bottom"
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+
+        /* =====================
+           TYPE CHART
+        ===================== */
+
+        const typeLabels =
+            Object.keys(typeCounts);
+
+
+        const typeValues =
+            Object.values(typeCounts);
+
+
+        const typeCanvas =
+            document.getElementById(
+                "typeChart"
+            );
+
+
+        if(typeChart){
+
+            typeChart.destroy();
+
+        }
+
+
+        typeChart =
+            new Chart(
+                typeCanvas,
+                {
+
+                    type:"bar",
+
+                    data:{
+
+                        labels:typeLabels,
+
+                        datasets:[{
+
+                            label:
+                                "จำนวนคำร้อง",
+
+                            data:typeValues
+
+                        }]
+
+                    },
+
+                    options:{
+
+                        responsive:true,
+
+                        maintainAspectRatio:false,
+
+                        scales:{
+
+                            y:{
+
+                                beginAtZero:true,
+
+                                ticks:{
+
+                                    stepSize:1
+
+                                }
+
+                            }
+
+                        },
+
+                        plugins:{
+
+                            legend:{
+
+                                display:false
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+    },
+
+
+    (error)=>{
+
+        console.error(
+            "Firestore Error:",
+            error
+        );
+
+
+        document.getElementById(
+            "loading"
+        ).innerText =
+            "❌ ไม่สามารถเชื่อมต่อ Firebase ได้";
+
+    }
+
+);
+
+</script>
+
+
+</body>
+
+</html>
